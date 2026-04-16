@@ -13,11 +13,27 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk"
 });
 
+const siteUrl = 'https://smart-blinds-zeta.vercel.app'
+
 export const metadata: Metadata = {
   title: 'SmartBlinds — Autonomous Blinds Powered by Solar Intelligence',
   description: 'SmartBlinds automatically adjust to sunlight using smart sensors and solar-powered logic. Experience the future of home automation with energy-efficient, intelligent window blinds.',
   keywords: ['smart blinds', 'autonomous blinds', 'solar powered', 'home automation', 'energy efficient', 'smart home'],
   generator: 'v0.app',
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    title: 'SmartBlinds — Autonomous Blinds Powered by Solar Intelligence',
+    description: 'Automatically adjust to sunlight using smart sensors and solar-powered logic. Experience effortless comfort and energy savings.',
+    url: siteUrl,
+    siteName: 'SmartBlinds',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SmartBlinds — Autonomous Blinds Powered by Solar Intelligence',
+    description: 'Automatically adjust to sunlight using smart sensors and solar-powered logic. Experience effortless comfort and energy savings.',
+  },
   icons: {
     icon: [
       {
