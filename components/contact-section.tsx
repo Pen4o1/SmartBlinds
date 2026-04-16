@@ -9,12 +9,49 @@ import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react"
 
 export function ContactSection() {
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Simulate form submission
-    setIsSubmitted(true)
-    setTimeout(() => setIsSubmitted(false), 3000)
+    setIsLoading(true)
+    setErrorMessage(null)
+
+    const form = e.currentTarget
+    const formData = new FormData(form)
+    const payload = {
+      name: String(formData.get("name") || ""),
+      email: String(formData.get("email") || ""),
+      phone: String(formData.get("phone") || ""),
+      message: String(formData.get("message") || ""),
+    }
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const data = (await response.json()) as { error?: string }
+
+      if (!response.ok) {
+        throw new Error(data.error || "Something went wrong")
+      }
+
+      form.reset()
+      setIsSubmitted(true)
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "We couldn't send your message right now. Please try again."
+      )
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -92,6 +129,7 @@ export function ContactSection() {
                     <Label htmlFor="name">Name</Label>
                     <Input
                       id="name"
+                      name="name"
                       placeholder="Your name"
                       required
                       className="rounded-xl"
@@ -101,6 +139,7 @@ export function ContactSection() {
                     <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
+                      name="email"
                       type="email"
                       placeholder="you@example.com"
                       required
@@ -113,6 +152,7 @@ export function ContactSection() {
                   <Label htmlFor="phone">Phone (Optional)</Label>
                   <Input
                     id="phone"
+                    name="phone"
                     type="tel"
                     placeholder="+1 (555) 000-0000"
                     className="rounded-xl"
@@ -123,15 +163,27 @@ export function ContactSection() {
                   <Label htmlFor="message">Tell us about your windows</Label>
                   <Textarea
                     id="message"
+                    name="message"
                     placeholder="How many windows? What rooms? Any specific needs?"
                     rows={4}
                     className="rounded-xl resize-none"
                   />
                 </div>
 
-                <Button type="submit" size="lg" className="w-full rounded-xl">
+                {errorMessage ? (
+                  <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {errorMessage}
+                  </p>
+                ) : null}
+
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full rounded-xl"
+                  disabled={isLoading}
+                >
                   <Send className="mr-2 h-4 w-4" />
-                  Send Message
+                  {isLoading ? "Sending..." : "Send Message"}
                 </Button>
 
                 <p className="text-center text-sm text-muted-foreground">
