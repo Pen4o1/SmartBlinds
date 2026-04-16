@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 
-export const alt = 'SmartBlinds — Autonomous Blinds Powered by Solar Intelligence'
+export const alt = 'SmartBlinds — Solar-Powered Autonomous Blinds'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -11,7 +11,7 @@ export default async function Image() {
     (
       <div
         style={{
-          background: 'linear-gradient(135deg, #f9f7f4 0%, #eee8df 50%, #f0e8d8 100%)',
+          background: 'linear-gradient(135deg, #1c1917 0%, #292524 50%, #1c1917 100%)',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -23,16 +23,29 @@ export default async function Image() {
           overflow: 'hidden',
         }}
       >
-        {/* Sun glow */}
+        {/* Ambient glow top-right */}
         <div
           style={{
             position: 'absolute',
-            top: '-120px',
-            right: '-80px',
+            top: '-100px',
+            right: '-60px',
+            width: '500px',
+            height: '500px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(234,179,8,0.25) 0%, transparent 65%)',
+            display: 'flex',
+          }}
+        />
+        {/* Ambient glow bottom-left */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '-150px',
+            left: '-100px',
             width: '400px',
             height: '400px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(234,179,8,0.3) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(234,179,8,0.1) 0%, transparent 65%)',
             display: 'flex',
           }}
         />
@@ -42,23 +55,24 @@ export default async function Image() {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            maxWidth: '600px',
-            gap: '16px',
+            maxWidth: '640px',
+            gap: '12px',
+            zIndex: 1,
           }}
         >
-          {/* Logo/brand pill */}
+          {/* Brand */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
-              marginBottom: '8px',
+              marginBottom: '4px',
             }}
           >
             <div
               style={{
-                width: '12px',
-                height: '12px',
+                width: '14px',
+                height: '14px',
                 borderRadius: '50%',
                 background: '#eab308',
                 display: 'flex',
@@ -66,10 +80,10 @@ export default async function Image() {
             />
             <span
               style={{
-                fontSize: '18px',
-                fontWeight: 600,
-                color: '#78716c',
-                letterSpacing: '0.05em',
+                fontSize: '20px',
+                fontWeight: 700,
+                color: '#a8a29e',
+                letterSpacing: '0.08em',
                 textTransform: 'uppercase' as const,
               }}
             >
@@ -77,74 +91,125 @@ export default async function Image() {
             </span>
           </div>
 
+          {/* Headline */}
           <div
             style={{
-              fontSize: '52px',
+              fontSize: '64px',
               fontWeight: 800,
-              lineHeight: 1.1,
-              color: '#1c1917',
+              lineHeight: 1.05,
+              color: '#fafaf9',
               display: 'flex',
               flexDirection: 'column',
             }}
           >
             <span>Blinds That Think</span>
-            <span style={{ color: '#ca8a04' }}>for Themselves</span>
+            <span style={{ color: '#eab308' }}>for Themselves</span>
           </div>
 
+          {/* Subtitle */}
           <p
             style={{
-              fontSize: '22px',
+              fontSize: '24px',
               lineHeight: 1.5,
-              color: '#78716c',
+              color: '#a8a29e',
               marginTop: '8px',
             }}
           >
-            Automatically adjust to sunlight using smart sensors and solar-powered logic.
+            Solar-powered sensors. Automatic adjustment. Zero effort.
           </p>
+
+          {/* CTA button */}
+          <div
+            style={{
+              display: 'flex',
+              marginTop: '24px',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: '#eab308',
+                color: '#1c1917',
+                fontSize: '18px',
+                fontWeight: 700,
+                padding: '14px 32px',
+                borderRadius: '50px',
+              }}
+            >
+              See How It Works
+              <span style={{ fontSize: '20px' }}>→</span>
+            </div>
+          </div>
         </div>
 
-        {/* Blinds illustration */}
+        {/* Window / blinds illustration */}
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            width: '320px',
-            height: '420px',
+            width: '300px',
+            height: '400px',
             borderRadius: '16px',
-            border: '6px solid #e7e5e4',
-            background: 'linear-gradient(180deg, rgba(234,179,8,0.15) 0%, rgba(234,179,8,0.05) 100%)',
+            border: '4px solid #44403c',
+            background: 'linear-gradient(180deg, rgba(234,179,8,0.12) 0%, rgba(234,179,8,0.03) 100%)',
             overflow: 'hidden',
             position: 'relative',
-            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)',
+            boxShadow: '0 25px 60px -12px rgba(0,0,0,0.5)',
+            zIndex: 1,
           }}
         >
           {/* Sun in window */}
           <div
             style={{
               position: 'absolute',
-              top: '-20px',
-              right: '-20px',
-              width: '80px',
-              height: '80px',
+              top: '-16px',
+              right: '-16px',
+              width: '72px',
+              height: '72px',
               borderRadius: '50%',
-              background: 'radial-gradient(circle, #eab308 30%, rgba(234,179,8,0.4) 70%)',
+              background: 'radial-gradient(circle, #eab308 25%, rgba(234,179,8,0.3) 70%)',
               display: 'flex',
             }}
           />
-          {/* Blind slats */}
+          {/* Slats */}
           {Array.from({ length: 10 }).map((_, i) => (
             <div
               key={i}
               style={{
                 width: '100%',
                 height: '10%',
-                background: i % 2 === 0 ? '#fafaf9' : '#f5f5f4',
-                borderBottom: '1px solid rgba(0,0,0,0.06)',
+                background: i % 2 === 0 ? '#292524' : '#1c1917',
+                borderBottom: '1px solid rgba(234,179,8,0.08)',
                 display: 'flex',
-                transform: `perspective(200px) rotateX(${15 + Math.sin(i * 0.6) * 8}deg)`,
               }}
             />
           ))}
+          {/* Sensor dot */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '16px',
+              left: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+          >
+            <div
+              style={{
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: '#22c55e',
+                display: 'flex',
+              }}
+            />
+            <span style={{ fontSize: '12px', color: '#a8a29e', fontWeight: 600 }}>
+              SENSOR ACTIVE
+            </span>
+          </div>
         </div>
 
         {/* Bottom accent bar */}
@@ -154,11 +219,26 @@ export default async function Image() {
             bottom: 0,
             left: 0,
             right: 0,
-            height: '6px',
-            background: 'linear-gradient(90deg, #eab308, #ca8a04)',
+            height: '4px',
+            background: 'linear-gradient(90deg, #eab308, #ca8a04, #eab308)',
             display: 'flex',
           }}
         />
+
+        {/* URL watermark */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '20px',
+            right: '80px',
+            fontSize: '14px',
+            color: '#57534e',
+            fontWeight: 500,
+            display: 'flex',
+          }}
+        >
+          smart-blinds-zeta.vercel.app
+        </div>
       </div>
     ),
     { ...size }

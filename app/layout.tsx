@@ -22,8 +22,8 @@ export const metadata: Metadata = {
   generator: 'v0.app',
   metadataBase: new URL(siteUrl),
   openGraph: {
-    title: 'SmartBlinds — Autonomous Blinds Powered by Solar Intelligence',
-    description: 'Automatically adjust to sunlight using smart sensors and solar-powered logic. Experience effortless comfort and energy savings.',
+    title: 'SmartBlinds — Solar-Powered Autonomous Blinds',
+    description: 'Blinds that think for themselves. Automatically adjust to sunlight using smart sensors and solar-powered logic.',
     url: siteUrl,
     siteName: 'SmartBlinds',
     locale: 'en_US',
@@ -31,8 +31,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SmartBlinds — Autonomous Blinds Powered by Solar Intelligence',
-    description: 'Automatically adjust to sunlight using smart sensors and solar-powered logic. Experience effortless comfort and energy savings.',
+    title: 'SmartBlinds — Solar-Powered Autonomous Blinds',
+    description: 'Blinds that think for themselves. Automatically adjust to sunlight using smart sensors and solar-powered logic.',
   },
   icons: {
     icon: [
