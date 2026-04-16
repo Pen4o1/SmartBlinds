@@ -115,7 +115,7 @@ export function HeroSection() {
                     className="blind-slat h-[8.33%] border-b border-card/20 bg-card transition-transform duration-1000 ease-out"
                     style={{
                       transformOrigin: "top center",
-                      transform: `rotateX(${25 + Math.sin(i * 0.5) * 10}deg)`,
+                      transform: `rotateX(${(25 + Math.sin(i * 0.5) * 10).toFixed(3)}deg)`,
                       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                     }}
                   />
