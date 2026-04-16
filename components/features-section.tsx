@@ -59,15 +59,15 @@ export function FeaturesSection() {
             >
               {/* Hover gradient effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              
+
               <div className="relative">
                 <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors duration-300 group-hover:bg-primary/20">
                   <feature.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="mb-3 font-[family-name:var(--font-display)] text-lg font-semibold text-card-foreground">
+                <h3 className="mb-3 font-[family-name:var(--font-display)] text-xl font-bold text-card-foreground transition-colors duration-300 group-hover:text-primary">
                   {feature.title}
                 </h3>
-                <p className="leading-relaxed text-muted-foreground">
+                <p className="text-base leading-relaxed text-muted-foreground transition-colors duration-300 group-hover:text-foreground/90">
                   {feature.description}
                 </p>
               </div>

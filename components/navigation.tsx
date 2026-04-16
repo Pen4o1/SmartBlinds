@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 const navLinks = [
-  { href: "#how-it-works", label: "How It Works" },
-  { href: "#features", label: "Features" },
-  { href: "#technology", label: "Technology" },
-  { href: "#use-cases", label: "Use Cases" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#how-it-works", label: "How It Works" },
+  { href: "/#features", label: "Features" },
+  { href: "/#technology", label: "Technology" },
+  { href: "/#use-cases", label: "Use Cases" },
+  { href: "/contact", label: "Contact" },
 ]
 
 export function Navigation() {
@@ -35,7 +35,7 @@ export function Navigation() {
       )}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-        <a href="#" className="flex items-center gap-2">
+        <a href="/" className="flex items-center gap-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
             <Sun className="h-5 w-5 text-primary-foreground" />
           </div>
@@ -59,7 +59,7 @@ export function Navigation() {
 
         <div className="hidden lg:flex">
           <Button asChild className="rounded-full px-6">
-            <a href="#contact">Get a Quote</a>
+            <a href="/contact">Contact Us</a>
           </Button>
         </div>
 
@@ -93,8 +93,8 @@ export function Navigation() {
             ))}
             <div className="pt-4">
               <Button asChild className="w-full rounded-full">
-                <a href="#contact" onClick={() => setIsMobileMenuOpen(false)}>
-                  Get a Quote
+                <a href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
+                  Contact Us
                 </a>
               </Button>
             </div>

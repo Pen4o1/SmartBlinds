@@ -58,28 +58,27 @@ export function HowItWorksSection() {
               {steps.map((item, index) => (
                 <div
                   key={index}
-                  className={`relative flex flex-col gap-8 lg:flex-row lg:items-center ${
-                    index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
-                  }`}
+                  className={`relative flex flex-col gap-8 lg:flex-row lg:items-center ${index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
+                    }`}
                 >
                   {/* Timeline dot */}
                   <div className="absolute left-8 top-0 hidden h-4 w-4 -translate-x-1/2 rounded-full border-4 border-background bg-primary lg:left-1/2 lg:top-1/2 lg:-translate-y-1/2 lg:block" />
 
                   {/* Content */}
                   <div className={`flex-1 ${index % 2 === 0 ? "lg:pr-24 lg:text-right" : "lg:pl-24"}`}>
-                    <div className={`rounded-2xl border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:border-primary/50 hover:shadow-lg ${index % 2 === 0 ? "lg:ml-auto" : ""} max-w-xl`}>
+                    <div className={`group rounded-2xl border border-border bg-card p-8 shadow-sm transition-all duration-300 hover:border-primary/50 hover:shadow-lg ${index % 2 === 0 ? "lg:ml-auto" : ""} max-w-xl`}>
                       <div className={`mb-6 flex items-center gap-4 ${index % 2 === 0 ? "lg:flex-row-reverse" : ""}`}>
                         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
                           <item.icon className="h-7 w-7 text-primary" />
                         </div>
-                        <span className="font-[family-name:var(--font-display)] text-5xl font-bold text-primary/20">
+                        <span className="font-[family-name:var(--font-display)] text-5xl font-bold text-primary/40 transition-colors duration-300 group-hover:text-primary/80">
                           {item.step}
                         </span>
                       </div>
-                      <h3 className="mb-3 font-[family-name:var(--font-display)] text-xl font-semibold text-card-foreground">
+                      <h3 className="mb-3 font-[family-name:var(--font-display)] text-2xl font-bold text-card-foreground transition-colors duration-300 group-hover:text-primary">
                         {item.title}
                       </h3>
-                      <p className="mb-4 leading-relaxed text-muted-foreground">
+                      <p className="mb-4 text-lg leading-relaxed text-muted-foreground transition-colors duration-300 group-hover:text-foreground/90">
                         {item.description}
                       </p>
                       <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2">

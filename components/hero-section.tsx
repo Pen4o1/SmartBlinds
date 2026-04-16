@@ -88,11 +88,11 @@ export function HeroSection() {
               size="lg"
               className="rounded-full border-border bg-card/50 px-8 backdrop-blur-sm"
             >
-              <a href="#contact" className="flex items-center gap-2">
+              <a href="/contact" className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
                   <Play className="h-3 w-3 fill-primary-foreground text-primary-foreground" />
                 </div>
-                Get a Quote
+                Contact Us
               </a>
             </Button>
           </div>

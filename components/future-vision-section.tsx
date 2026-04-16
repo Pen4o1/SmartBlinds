@@ -77,7 +77,7 @@ export function FutureVisionSection() {
 
         <div className="mt-12 text-center">
           <a
-            href="#contact"
+            href="/contact"
             className="group inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 font-medium text-foreground transition-all duration-300 hover:border-primary hover:shadow-lg"
           >
             Stay Updated on New Features

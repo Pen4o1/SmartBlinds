@@ -61,7 +61,7 @@ export function TechnologySection() {
 
             <div className="mt-8">
               <Button asChild variant="outline" className="group rounded-full">
-                <a href="#contact">
+                <a href="/contact">
                   Request Technical Specs
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </a>

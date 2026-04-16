@@ -39,7 +39,7 @@ export function CTASection() {
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button asChild size="lg" className="group rounded-full px-8">
-            <a href="#contact">
+            <a href="/contact">
               Request Installation
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </a>
@@ -50,7 +50,7 @@ export function CTASection() {
             size="lg"
             className="rounded-full border-border bg-card/50 px-8 backdrop-blur-sm"
           >
-            <a href="#contact">Get a Quote</a>
+            <a href="/contact">Contact Us</a>
           </Button>
         </div>
       </div>

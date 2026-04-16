@@ -61,14 +61,14 @@ export function SolutionSection() {
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 transition-colors group-hover:bg-primary/20">
                       <step.icon className="h-6 w-6 text-primary" />
                     </div>
-                    <span className="font-[family-name:var(--font-display)] text-4xl font-bold text-primary/20">
+                    <span className="font-[family-name:var(--font-display)] text-4xl font-bold text-primary/40 transition-colors duration-300 group-hover:text-primary/80">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                   </div>
-                  <h3 className="mb-2 font-[family-name:var(--font-display)] text-lg font-semibold text-card-foreground">
+                  <h3 className="mb-2 font-[family-name:var(--font-display)] text-xl font-bold text-card-foreground transition-colors duration-300 group-hover:text-primary">
                     {step.title}
                   </h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
+                  <p className="text-base leading-relaxed text-muted-foreground transition-colors duration-300 group-hover:text-foreground/90">
                     {step.description}
                   </p>
                 </div>

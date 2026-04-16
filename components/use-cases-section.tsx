@@ -81,7 +81,7 @@ export function UseCasesSection() {
                 </ul>
 
                 <a
-                  href="#contact"
+                  href="/contact"
                   className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
                 >
                   Learn more
