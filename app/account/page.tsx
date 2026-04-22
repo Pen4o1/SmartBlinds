@@ -30,6 +30,13 @@ export default async function AccountPage() {
       where: { userId },
     }),
   ])
+  const googleAccount = await prisma.account.findFirst({
+    where: {
+      userId,
+      provider: "google",
+    },
+    select: { provider: true },
+  })
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 px-6 py-10">
@@ -52,8 +59,10 @@ export default async function AccountPage() {
             </div>
             <div>
               <p className="text-muted-foreground text-xs uppercase tracking-wide">Email status</p>
-              <Badge variant={user?.emailVerified ? "secondary" : "outline"}>
-                {user?.emailVerified ? "Verified" : "Not verified"}
+              <Badge
+                variant={googleAccount ? "secondary" : user?.emailVerified ? "secondary" : "outline"}
+              >
+                {googleAccount ? "Logged in with Google" : user?.emailVerified ? "Verified" : "Not verified"}
               </Badge>
             </div>
             <div>

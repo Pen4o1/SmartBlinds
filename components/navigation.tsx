@@ -1,8 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Menu, X, Sun } from "lucide-react"
+import { ChevronDown, LogOut, Menu, Sun, UserCircle2, X } from "lucide-react"
+import { signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 
 const navLinks = [
@@ -17,6 +26,7 @@ export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [userEmail, setUserEmail] = useState<string | null>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,10 +41,12 @@ export function Navigation() {
       try {
         const response = await fetch("/api/auth/session")
         if (!response.ok) return
-        const data = (await response.json()) as { user?: { id?: string } }
+        const data = (await response.json()) as { user?: { id?: string; email?: string | null } }
         setIsLoggedIn(Boolean(data?.user?.id))
+        setUserEmail(data?.user?.email ?? null)
       } catch {
         setIsLoggedIn(false)
+        setUserEmail(null)
       }
     }
     void run()
@@ -74,15 +86,43 @@ export function Navigation() {
 
         <div className="hidden items-center gap-2 lg:flex">
           {isLoggedIn ? (
-            <Button asChild variant="outline" className="rounded-full px-5">
-              <a href="/account">Account</a>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="rounded-full px-5">
+                  <UserCircle2 className="mr-2 h-4 w-4" />
+                  Account
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>{userEmail ?? "Signed in"}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <a href="/account">Account</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="/dashboard">Dashboard</a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="/">Back to Landing</a>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={async () => {
+                    await signOut({ callbackUrl: "/login" })
+                  }}
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild className="rounded-full px-6">
+              <a href="/login">Sign In</a>
             </Button>
-          ) : null}
-          <Button asChild className="rounded-full px-6">
-            <a href={isLoggedIn ? "/dashboard" : "/login"}>
-              {isLoggedIn ? "Dashboard" : "Sign In"}
-            </a>
-          </Button>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -115,17 +155,36 @@ export function Navigation() {
             ))}
             <div className="pt-4">
               {isLoggedIn ? (
-                <Button asChild variant="outline" className="mb-2 w-full rounded-full">
-                  <a href="/account" onClick={() => setIsMobileMenuOpen(false)}>
-                    Account
+                <>
+                  <Button asChild variant="outline" className="mb-2 w-full rounded-full">
+                    <a href="/account" onClick={() => setIsMobileMenuOpen(false)}>
+                      Account
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline" className="mb-2 w-full rounded-full">
+                    <a href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
+                      Dashboard
+                    </a>
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    className="mb-2 w-full rounded-full"
+                    onClick={async () => {
+                      setIsMobileMenuOpen(false)
+                      await signOut({ callbackUrl: "/login" })
+                    }}
+                  >
+                    Sign out
+                  </Button>
+                </>
+              ) : null}
+              {!isLoggedIn ? (
+                <Button asChild className="w-full rounded-full">
+                  <a href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                    Sign In
                   </a>
                 </Button>
               ) : null}
-              <Button asChild className="w-full rounded-full">
-                <a href={isLoggedIn ? "/dashboard" : "/login"} onClick={() => setIsMobileMenuOpen(false)}>
-                  {isLoggedIn ? "Dashboard" : "Sign In"}
-                </a>
-              </Button>
             </div>
           </div>
         </div>
