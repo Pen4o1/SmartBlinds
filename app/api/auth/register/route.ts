@@ -1,7 +1,9 @@
-import bcrypt from "bcryptjs"
 import { z } from "zod"
 
+import { hashPassword } from "@/lib/password"
 import { prisma } from "@/lib/prisma"
+
+export const runtime = "nodejs"
 
 const registerSchema = z.object({
   name: z.string().trim().min(1).max(120),
@@ -25,7 +27,7 @@ export async function POST(request: Request) {
       return Response.json({ error: "Email already registered" }, { status: 409 })
     }
 
-    const passwordHash = await bcrypt.hash(parsed.data.password, 10)
+    const passwordHash = await hashPassword(parsed.data.password)
 
     await prisma.user.create({
       data: {
