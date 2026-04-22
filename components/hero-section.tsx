@@ -1,11 +1,12 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Play } from "lucide-react"
 
 export function HeroSection() {
   const blindsRef = useRef<HTMLDivElement>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -22,6 +23,20 @@ export function HeroSection() {
     }, 3000)
 
     return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    const run = async () => {
+      try {
+        const response = await fetch("/api/auth/session")
+        if (!response.ok) return
+        const data = (await response.json()) as { user?: { id?: string } }
+        setIsLoggedIn(Boolean(data?.user?.id))
+      } catch {
+        setIsLoggedIn(false)
+      }
+    }
+    void run()
   }, [])
 
   return (
@@ -77,8 +92,8 @@ export function HeroSection() {
 
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row lg:justify-start">
             <Button asChild size="lg" className="group rounded-full px-8">
-              <a href="#how-it-works">
-                See How It Works
+              <a href={isLoggedIn ? "/dashboard" : "/login"}>
+                {isLoggedIn ? "Go to Dashboard" : "Sign In to Dashboard"}
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </a>
             </Button>
@@ -88,11 +103,11 @@ export function HeroSection() {
               size="lg"
               className="rounded-full border-border bg-card/50 px-8 backdrop-blur-sm"
             >
-              <a href="/contact" className="flex items-center gap-2">
+              <a href="#how-it-works" className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
                   <Play className="h-3 w-3 fill-primary-foreground text-primary-foreground" />
                 </div>
-                Contact Us
+                See How It Works
               </a>
             </Button>
           </div>
