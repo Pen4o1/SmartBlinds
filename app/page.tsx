@@ -11,7 +11,6 @@ import { UseCasesSection } from "@/components/use-cases-section"
 import { FutureVisionSection } from "@/components/future-vision-section"
 import { TestimonialsSection } from "@/components/testimonials-section"
 import { CTASection } from "@/components/cta-section"
-import { ContactSection } from "@/components/contact-section"
 import { Footer } from "@/components/footer"
 
 export default function Home() {
@@ -28,7 +27,6 @@ export default function Home() {
       <FutureVisionSection />
       <TestimonialsSection />
       <CTASection />
-      <ContactSection />
       <Footer />
     </main>
   )

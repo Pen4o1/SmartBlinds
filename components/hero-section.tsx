@@ -101,11 +101,11 @@ export function HeroSection() {
               asChild
               variant="outline"
               size="lg"
-              className="rounded-full border-border bg-card/50 px-8 backdrop-blur-sm"
+              className="group rounded-full border-border bg-card/50 px-8 transition-all hover:bg-card hover:shadow-md backdrop-blur-sm"
             >
               <a href="#how-it-works" className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
-                  <Play className="h-3 w-3 fill-primary-foreground text-primary-foreground" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary transition-transform group-hover:scale-105">
+                  <Play className="h-3 w-3 fill-primary-foreground text-primary-foreground transition-transform group-hover:translate-x-0.5" />
                 </div>
                 See How It Works
               </a>
