@@ -29,6 +29,9 @@ export default async function DashboardPage() {
 
         <div className="mt-5 flex flex-wrap items-center gap-2">
           <Button asChild variant="outline" className="rounded-full">
+            <Link href="/account">Account</Link>
+          </Button>
+          <Button asChild variant="outline" className="rounded-full">
             <Link href="/">Back to Landing</Link>
           </Button>
           <Button asChild variant="outline" className="rounded-full">

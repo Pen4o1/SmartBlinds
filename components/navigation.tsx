@@ -72,7 +72,12 @@ export function Navigation() {
           ))}
         </div>
 
-        <div className="hidden lg:flex">
+        <div className="hidden items-center gap-2 lg:flex">
+          {isLoggedIn ? (
+            <Button asChild variant="outline" className="rounded-full px-5">
+              <a href="/account">Account</a>
+            </Button>
+          ) : null}
           <Button asChild className="rounded-full px-6">
             <a href={isLoggedIn ? "/dashboard" : "/login"}>
               {isLoggedIn ? "Dashboard" : "Sign In"}
@@ -109,6 +114,13 @@ export function Navigation() {
               </a>
             ))}
             <div className="pt-4">
+              {isLoggedIn ? (
+                <Button asChild variant="outline" className="mb-2 w-full rounded-full">
+                  <a href="/account" onClick={() => setIsMobileMenuOpen(false)}>
+                    Account
+                  </a>
+                </Button>
+              ) : null}
               <Button asChild className="w-full rounded-full">
                 <a href={isLoggedIn ? "/dashboard" : "/login"} onClick={() => setIsMobileMenuOpen(false)}>
                   {isLoggedIn ? "Dashboard" : "Sign In"}

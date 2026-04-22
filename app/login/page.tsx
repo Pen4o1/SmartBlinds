@@ -7,6 +7,14 @@ import { signIn } from "next-auth/react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
@@ -30,6 +38,10 @@ function LoginContent() {
   const [loading, setLoading] = useState(false)
   const [forgotEmail, setForgotEmail] = useState("")
   const [forgotSent, setForgotSent] = useState(false)
+  const [showVerifyDialog, setShowVerifyDialog] = useState(false)
+  const [verifyEmailTarget, setVerifyEmailTarget] = useState("")
+  const [showForgotDialog, setShowForgotDialog] = useState(false)
+  const [forgotLoading, setForgotLoading] = useState(false)
 
   const router = useRouter()
   const verified = searchParams.get("verified")
@@ -56,6 +68,8 @@ function LoginContent() {
 
         setLoading(false)
         setError(null)
+        setVerifyEmailTarget(email)
+        setShowVerifyDialog(true)
         setMode("signIn")
         return
       }
@@ -88,11 +102,13 @@ function LoginContent() {
 
   async function handleForgotPassword() {
     if (!forgotEmail.trim()) return
+    setForgotLoading(true)
     await fetch("/api/auth/forgot-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: forgotEmail }),
     })
+    setForgotLoading(false)
     setForgotSent(true)
   }
 
@@ -183,22 +199,14 @@ function LoginContent() {
           </div>
 
           {mode === "signIn" ? (
-            <div className="space-y-2 rounded-md border p-3">
-              <p className="text-sm font-medium">Forgot password?</p>
-              <div className="flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={forgotEmail}
-                  onChange={(event) => setForgotEmail(event.target.value)}
-                />
-                <Button type="button" variant="outline" onClick={() => void handleForgotPassword()}>
-                  Send
-                </Button>
-              </div>
-              {forgotSent ? (
-                <p className="text-xs text-muted-foreground">If that account exists, a reset email was sent.</p>
-              ) : null}
+            <div className="text-center">
+              <button
+                type="button"
+                className="text-primary text-sm underline underline-offset-4"
+                onClick={() => setShowForgotDialog(true)}
+              >
+                Forgot password?
+              </button>
             </div>
           ) : null}
 
@@ -209,6 +217,58 @@ function LoginContent() {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={showVerifyDialog} onOpenChange={setShowVerifyDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Verify your email</DialogTitle>
+            <DialogDescription>
+              We sent a verification link to <span className="font-medium">{verifyEmailTarget}</span>. Open your
+              mailbox and click the link before signing in.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setShowVerifyDialog(false)}>Got it</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={showForgotDialog}
+        onOpenChange={(nextOpen) => {
+          setShowForgotDialog(nextOpen)
+          if (!nextOpen) {
+            setForgotSent(false)
+            setForgotEmail("")
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reset password</DialogTitle>
+            <DialogDescription>Enter your email and we will send a reset link.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Input
+              type="email"
+              placeholder="Enter your email"
+              value={forgotEmail}
+              onChange={(event) => setForgotEmail(event.target.value)}
+            />
+            {forgotSent ? (
+              <p className="text-xs text-muted-foreground">If that account exists, a reset email was sent.</p>
+            ) : null}
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setShowForgotDialog(false)}>
+              Cancel
+            </Button>
+            <Button type="button" disabled={forgotLoading || !forgotEmail.trim()} onClick={() => void handleForgotPassword()}>
+              {forgotLoading ? "Sending..." : "Send reset link"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </main>
   )
 }
