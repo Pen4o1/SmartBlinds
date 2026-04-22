@@ -1,13 +1,14 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { DeviceStatus } from "@prisma/client"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
+
+type DeviceStatus = "OPEN" | "CLOSED" | "AUTO"
 
 type Device = {
   id: string
@@ -18,8 +19,8 @@ type Device = {
 }
 
 function statusBadgeVariant(status: DeviceStatus) {
-  if (status === DeviceStatus.OPEN) return "secondary"
-  if (status === DeviceStatus.CLOSED) return "outline"
+  if (status === "OPEN") return "secondary"
+  if (status === "CLOSED") return "outline"
   return "default"
 }
 
@@ -73,7 +74,7 @@ export function DeviceDashboard() {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       {devices.map((device) => {
-        const isAuto = device.status === DeviceStatus.AUTO
+        const isAuto = device.status === "AUTO"
         const isSaving = Boolean(savingIds[device.id])
 
         return (
@@ -116,7 +117,7 @@ export function DeviceDashboard() {
                     setDevices((prev) =>
                       prev.map((entry) =>
                         entry.id === device.id
-                          ? { ...entry, status: checked ? DeviceStatus.AUTO : DeviceStatus.CLOSED }
+                          ? { ...entry, status: checked ? "AUTO" : "CLOSED" }
                           : entry
                       )
                     )
@@ -131,10 +132,10 @@ export function DeviceDashboard() {
                   onClick={() => {
                     setDevices((prev) =>
                       prev.map((entry) =>
-                        entry.id === device.id ? { ...entry, status: DeviceStatus.OPEN, angle: 100 } : entry
+                        entry.id === device.id ? { ...entry, status: "OPEN", angle: 100 } : entry
                       )
                     )
-                    void updateDevice(device.id, { status: DeviceStatus.OPEN, angle: 100 })
+                    void updateDevice(device.id, { status: "OPEN", angle: 100 })
                   }}
                 >
                   Open
@@ -145,10 +146,10 @@ export function DeviceDashboard() {
                   onClick={() => {
                     setDevices((prev) =>
                       prev.map((entry) =>
-                        entry.id === device.id ? { ...entry, status: DeviceStatus.CLOSED, angle: 0 } : entry
+                        entry.id === device.id ? { ...entry, status: "CLOSED", angle: 0 } : entry
                       )
                     )
-                    void updateDevice(device.id, { status: DeviceStatus.CLOSED, angle: 0 })
+                    void updateDevice(device.id, { status: "CLOSED", angle: 0 })
                   }}
                 >
                   Close
