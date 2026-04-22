@@ -27,36 +27,46 @@ export default function LoginPage() {
     setError(null)
     setLoading(true)
 
-    if (mode === "signUp") {
-      const registerResponse = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+    try {
+      if (mode === "signUp") {
+        const registerResponse = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password }),
+        })
+
+        if (!registerResponse.ok) {
+          const data = (await registerResponse.json()) as { error?: string }
+          setError(data.error ?? "Could not create account")
+          setLoading(false)
+          return
+        }
+      }
+
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       })
 
-      if (!registerResponse.ok) {
-        const data = (await registerResponse.json()) as { error?: string }
-        setError(data.error ?? "Could not create account")
-        setLoading(false)
+      setLoading(false)
+
+      if (!result) {
+        setError("Authentication failed. Please try again.")
         return
       }
+
+      if (result.error) {
+        setError("Invalid email or password")
+        return
+      }
+
+      router.push("/dashboard")
+      router.refresh()
+    } catch {
+      setLoading(false)
+      setError("Something went wrong. Please try again.")
     }
-
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    })
-
-    setLoading(false)
-
-    if (result?.error) {
-      setError("Invalid email or password")
-      return
-    }
-
-    router.push("/dashboard")
-    router.refresh()
   }
 
   return (

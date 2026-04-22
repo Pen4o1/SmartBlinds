@@ -90,6 +90,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             lightLevel: 57,
           },
         ],
+        skipDuplicates: true,
       })
     },
   },

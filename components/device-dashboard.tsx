@@ -27,20 +27,28 @@ function statusBadgeVariant(status: DeviceStatus) {
 export function DeviceDashboard() {
   const [devices, setDevices] = useState<Device[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [savingIds, setSavingIds] = useState<Record<string, boolean>>({})
 
   const hasDevices = useMemo(() => devices.length > 0, [devices.length])
 
   useEffect(() => {
     const run = async () => {
-      const response = await fetch("/api/devices")
-      if (!response.ok) {
+      try {
+        const response = await fetch("/api/devices")
+        if (!response.ok) {
+          setError("Could not load devices. Please refresh.")
+          setLoading(false)
+          return
+        }
+
+        const data = (await response.json()) as { devices: Device[] }
+        setDevices(data.devices)
         setLoading(false)
-        return
+      } catch {
+        setError("Could not load devices. Please check your connection.")
+        setLoading(false)
       }
-      const data = (await response.json()) as { devices: Device[] }
-      setDevices(data.devices)
-      setLoading(false)
     }
 
     void run()
@@ -49,15 +57,21 @@ export function DeviceDashboard() {
   async function updateDevice(id: string, payload: Partial<{ angle: number; status: DeviceStatus; auto: boolean }>) {
     setSavingIds((prev) => ({ ...prev, [id]: true }))
 
-    const response = await fetch(`/api/devices/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    })
+    try {
+      const response = await fetch(`/api/devices/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
 
-    if (response.ok) {
-      const data = (await response.json()) as { device: Device }
-      setDevices((prev) => prev.map((device) => (device.id === id ? data.device : device)))
+      if (response.ok) {
+        const data = (await response.json()) as { device: Device }
+        setDevices((prev) => prev.map((device) => (device.id === id ? data.device : device)))
+      } else {
+        setError("Could not save device state.")
+      }
+    } catch {
+      setError("Could not save device state.")
     }
 
     setSavingIds((prev) => ({ ...prev, [id]: false }))
@@ -72,8 +86,10 @@ export function DeviceDashboard() {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
-      {devices.map((device) => {
+    <div className="space-y-4">
+      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      <div className="grid gap-4 md:grid-cols-2">
+        {devices.map((device) => {
         const isAuto = device.status === "AUTO"
         const isSaving = Boolean(savingIds[device.id])
 
@@ -158,7 +174,8 @@ export function DeviceDashboard() {
             </CardContent>
           </Card>
         )
-      })}
+        })}
+      </div>
     </div>
   )
 }

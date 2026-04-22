@@ -13,7 +13,13 @@ const registerSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const json = await request.json()
+    let json: unknown
+    try {
+      json = await request.json()
+    } catch {
+      return Response.json({ error: "Invalid JSON body" }, { status: 400 })
+    }
+
     const parsed = registerSchema.safeParse(json)
 
     if (!parsed.success) {
