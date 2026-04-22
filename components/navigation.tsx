@@ -65,7 +65,7 @@ export function Navigation() {
             <a
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="rounded-md px-2 py-1 text-sm font-medium text-muted-foreground transition-colors hover:bg-card/70 hover:text-primary"
             >
               {link.label}
             </a>
