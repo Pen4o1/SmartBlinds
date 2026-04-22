@@ -29,6 +29,8 @@ export function DeviceDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [savingIds, setSavingIds] = useState<Record<string, boolean>>({})
+  const [newDeviceName, setNewDeviceName] = useState("")
+  const [creating, setCreating] = useState(false)
 
   const hasDevices = useMemo(() => devices.length > 0, [devices.length])
 
@@ -54,7 +56,16 @@ export function DeviceDashboard() {
     void run()
   }, [])
 
-  async function updateDevice(id: string, payload: Partial<{ angle: number; status: DeviceStatus; auto: boolean }>) {
+  async function updateDevice(
+    id: string,
+    payload: Partial<{
+      angle: number
+      status: DeviceStatus
+      auto: boolean
+      lightLevel: number
+      name: string
+    }>
+  ) {
     setSavingIds((prev) => ({ ...prev, [id]: true }))
 
     try {
@@ -77,6 +88,51 @@ export function DeviceDashboard() {
     setSavingIds((prev) => ({ ...prev, [id]: false }))
   }
 
+  async function createDevice() {
+    const name = newDeviceName.trim()
+    if (!name) return
+
+    setCreating(true)
+    setError(null)
+    try {
+      const response = await fetch("/api/devices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      })
+
+      if (!response.ok) {
+        setError("Could not create device. Name may already exist.")
+        setCreating(false)
+        return
+      }
+
+      const data = (await response.json()) as { device: Device }
+      setDevices((prev) => [...prev, data.device])
+      setNewDeviceName("")
+    } catch {
+      setError("Could not create device.")
+    }
+    setCreating(false)
+  }
+
+  async function deleteDevice(id: string) {
+    setSavingIds((prev) => ({ ...prev, [id]: true }))
+    try {
+      const response = await fetch(`/api/devices/${id}`, {
+        method: "DELETE",
+      })
+      if (!response.ok) {
+        setError("Could not delete device.")
+      } else {
+        setDevices((prev) => prev.filter((device) => device.id !== id))
+      }
+    } catch {
+      setError("Could not delete device.")
+    }
+    setSavingIds((prev) => ({ ...prev, [id]: false }))
+  }
+
   if (loading) {
     return <p className="text-muted-foreground">Loading your devices...</p>
   }
@@ -88,6 +144,17 @@ export function DeviceDashboard() {
   return (
     <div className="space-y-4">
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      <div className="flex flex-col gap-2 rounded-lg border p-4 sm:flex-row">
+        <input
+          className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+          placeholder="New device name (e.g. Kitchen Blinds)"
+          value={newDeviceName}
+          onChange={(event) => setNewDeviceName(event.target.value)}
+        />
+        <Button disabled={creating || !newDeviceName.trim()} onClick={() => void createDevice()}>
+          {creating ? "Creating..." : "Create Device"}
+        </Button>
+      </div>
       <div className="grid gap-4 md:grid-cols-2">
         {devices.map((device) => {
         const isAuto = device.status === "AUTO"
@@ -106,6 +173,21 @@ export function DeviceDashboard() {
             </CardHeader>
 
             <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Device name</p>
+                <input
+                  className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                  value={device.name}
+                  onChange={(event) => {
+                    const name = event.target.value
+                    setDevices((prev) =>
+                      prev.map((entry) => (entry.id === device.id ? { ...entry, name } : entry))
+                    )
+                  }}
+                  onBlur={() => void updateDevice(device.id, { name: device.name })}
+                />
+              </div>
+
               <div className="space-y-2">
                 <p className="text-sm font-medium">Angle</p>
                 <Slider
@@ -142,6 +224,25 @@ export function DeviceDashboard() {
                 />
               </div>
 
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Light level</p>
+                <Slider
+                  value={[device.lightLevel]}
+                  onValueChange={(value) => {
+                    const lightLevel = value[0] ?? 0
+                    setDevices((prev) =>
+                      prev.map((entry) => (entry.id === device.id ? { ...entry, lightLevel } : entry))
+                    )
+                  }}
+                  onValueCommit={(value) => {
+                    const lightLevel = value[0] ?? 0
+                    void updateDevice(device.id, { lightLevel })
+                  }}
+                  max={100}
+                  step={1}
+                />
+              </div>
+
               <div className="flex gap-2">
                 <Button
                   disabled={isSaving}
@@ -169,6 +270,9 @@ export function DeviceDashboard() {
                   }}
                 >
                   Close
+                </Button>
+                <Button variant="destructive" disabled={isSaving} onClick={() => void deleteDevice(device.id)}>
+                  Delete
                 </Button>
               </div>
             </CardContent>

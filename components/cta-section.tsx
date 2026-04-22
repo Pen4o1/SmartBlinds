@@ -1,9 +1,35 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Sun } from "lucide-react"
 
+type SessionResponse = {
+  user?: {
+    id?: string
+    email?: string | null
+    name?: string | null
+  }
+}
+
 export function CTASection() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    const run = async () => {
+      try {
+        const response = await fetch("/api/auth/session")
+        if (!response.ok) return
+        const data = (await response.json()) as SessionResponse
+        setIsLoggedIn(Boolean(data?.user?.id))
+      } catch {
+        setIsLoggedIn(false)
+      }
+    }
+
+    void run()
+  }, [])
+
   return (
     <section className="relative overflow-hidden bg-accent py-20 lg:py-32">
       {/* Animated background */}
@@ -34,13 +60,15 @@ export function CTASection() {
         </h2>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground lg:text-xl">
-          Join the smart home revolution. Experience the comfort and savings of intelligent window automation.
+          {isLoggedIn
+            ? "Your account is ready. Open the dashboard to control devices, create new ones, and tune automation."
+            : "Join the smart home revolution. Create an account, sign in, and start controlling your blinds in seconds."}
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button asChild size="lg" className="group rounded-full px-8">
-            <a href="/contact">
-              Request Installation
+            <a href={isLoggedIn ? "/dashboard" : "/login"}>
+              {isLoggedIn ? "Access Dashboard" : "Create Account / Sign In"}
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </a>
           </Button>
@@ -50,9 +78,22 @@ export function CTASection() {
             size="lg"
             className="rounded-full border-border bg-card/50 px-8 backdrop-blur-sm"
           >
-            <a href="/contact">Contact Us</a>
+            <a href={isLoggedIn ? "/contact" : "/login"}>
+              {isLoggedIn ? "Contact Us" : "Required Steps"}
+            </a>
           </Button>
         </div>
+
+        {!isLoggedIn ? (
+          <div className="mx-auto mt-6 max-w-xl rounded-lg border border-border/60 bg-card/50 p-4 text-left text-sm text-muted-foreground">
+            <p className="font-medium text-foreground">Actions required before using dashboard:</p>
+            <ol className="mt-2 list-decimal space-y-1 pl-5">
+              <li>Create your account</li>
+              <li>Sign in with email and password</li>
+              <li>Open dashboard and manage your devices</li>
+            </ol>
+          </div>
+        ) : null}
       </div>
     </section>
   )

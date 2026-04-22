@@ -16,6 +16,7 @@ const navLinks = [
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +24,20 @@ export function Navigation() {
     }
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  useEffect(() => {
+    const run = async () => {
+      try {
+        const response = await fetch("/api/auth/session")
+        if (!response.ok) return
+        const data = (await response.json()) as { user?: { id?: string } }
+        setIsLoggedIn(Boolean(data?.user?.id))
+      } catch {
+        setIsLoggedIn(false)
+      }
+    }
+    void run()
   }, [])
 
   return (
@@ -59,7 +74,9 @@ export function Navigation() {
 
         <div className="hidden lg:flex">
           <Button asChild className="rounded-full px-6">
-            <a href="/contact">Contact Us</a>
+            <a href={isLoggedIn ? "/dashboard" : "/login"}>
+              {isLoggedIn ? "Dashboard" : "Sign In"}
+            </a>
           </Button>
         </div>
 
@@ -93,8 +110,8 @@ export function Navigation() {
             ))}
             <div className="pt-4">
               <Button asChild className="w-full rounded-full">
-                <a href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
-                  Contact Us
+                <a href={isLoggedIn ? "/dashboard" : "/login"} onClick={() => setIsMobileMenuOpen(false)}>
+                  {isLoggedIn ? "Dashboard" : "Sign In"}
                 </a>
               </Button>
             </div>
