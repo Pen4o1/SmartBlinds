@@ -1,8 +1,8 @@
 "use client"
 
-import { FormEvent, useState } from "react"
+import { FormEvent, Suspense, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { signIn } from "next-auth/react"
 
 import { Button } from "@/components/ui/button"
@@ -13,14 +13,26 @@ import { Label } from "@/components/ui/label"
 type Mode = "signIn" | "signUp"
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<main className="mx-auto flex min-h-screen w-full max-w-md items-center px-6 py-12" />}>
+      <LoginContent />
+    </Suspense>
+  )
+}
+
+function LoginContent() {
+  const searchParams = useSearchParams()
   const [mode, setMode] = useState<Mode>("signIn")
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState("")
+  const [forgotSent, setForgotSent] = useState(false)
 
   const router = useRouter()
+  const verified = searchParams.get("verified")
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -41,6 +53,11 @@ export default function LoginPage() {
           setLoading(false)
           return
         }
+
+        setLoading(false)
+        setError(null)
+        setMode("signIn")
+        return
       }
 
       const result = await signIn("credentials", {
@@ -69,6 +86,16 @@ export default function LoginPage() {
     }
   }
 
+  async function handleForgotPassword() {
+    if (!forgotEmail.trim()) return
+    await fetch("/api/auth/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: forgotEmail }),
+    })
+    setForgotSent(true)
+  }
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md items-center px-6 py-12">
       <Card className="w-full">
@@ -79,6 +106,8 @@ export default function LoginPage() {
               ? "Access your SmartBlinds dashboard."
               : "Create an account to manage your SmartBlinds devices."}
           </CardDescription>
+          {verified === "1" ? <p className="text-sm text-green-700">Email verified. You can now sign in.</p> : null}
+          {verified === "0" ? <p className="text-sm text-red-600">Verification link is invalid or expired.</p> : null}
         </CardHeader>
 
         <CardContent className="space-y-4">
@@ -124,6 +153,19 @@ export default function LoginPage() {
             <Button type="submit" disabled={loading} className="w-full">
               {loading ? "Please wait..." : mode === "signIn" ? "Sign in" : "Create account"}
             </Button>
+
+            {mode === "signIn" ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={async () => {
+                  await signIn("google", { callbackUrl: "/dashboard" })
+                }}
+              >
+                Continue with Google
+              </Button>
+            ) : null}
           </form>
 
           <div className="text-sm text-center">
@@ -139,6 +181,26 @@ export default function LoginPage() {
               {mode === "signIn" ? "Create one" : "Sign in"}
             </button>
           </div>
+
+          {mode === "signIn" ? (
+            <div className="space-y-2 rounded-md border p-3">
+              <p className="text-sm font-medium">Forgot password?</p>
+              <div className="flex gap-2">
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={forgotEmail}
+                  onChange={(event) => setForgotEmail(event.target.value)}
+                />
+                <Button type="button" variant="outline" onClick={() => void handleForgotPassword()}>
+                  Send
+                </Button>
+              </div>
+              {forgotSent ? (
+                <p className="text-xs text-muted-foreground">If that account exists, a reset email was sent.</p>
+              ) : null}
+            </div>
+          ) : null}
 
           <div className="text-center text-sm">
             <Link href="/" className="text-muted-foreground hover:text-foreground underline underline-offset-4">
